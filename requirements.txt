@@ -5,7 +5,7 @@ pillow
 flask-cors
 requests
 uwsgi
-tensorflow<2
+tensorflow
 #onnx
 #scikit-learn
 #xgboost
