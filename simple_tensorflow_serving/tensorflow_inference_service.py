@@ -33,7 +33,7 @@ class TensorFlowInferenceService(AbstractInferenceService):
                session_config={}):
     """
     Initialize the TensorFlow service by loading SavedModel to the Session.
-        
+
     Args:
       model_name: The name of the model.
       model_base_path: The file path of the model.
@@ -170,11 +170,13 @@ class TensorFlowInferenceService(AbstractInferenceService):
 
   def load_saved_model_version(self, model_version):
 
-    gpu_options = tf.GPUOptions(allow_growth=True)
 
     if tf.__version__.startswith("1"):
+      gpu_options = tf.GPUOptions(allow_growth=True)
       config = tf.ConfigProto(gpu_options=gpu_options)
     else:
+      gpu_options = tf.compat.v1.GPUOptions(allow_growth=True)
+
       config = tf.compat.v1.ConfigProto(gpu_options=gpu_options)
 
     if "log_device_placement" in self.session_config:
@@ -322,7 +324,7 @@ class TensorFlowInferenceService(AbstractInferenceService):
   def inference(self, json_data):
     """
     Make inference with the current Session object and JSON request data.
-        
+
     Args:
       json_data: The JSON serialized object with key and array data.
                  Example is {"model_version": 1, "data": {"keys": [[1.0], [2.0]], "features": [[10, 10, 10, 8, 6, 1, 8, 9, 1], [6, 2, 1, 1, 1, 1, 7, 1, 1]]}}.

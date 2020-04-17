@@ -1,4 +1,4 @@
-FROM python:2.7
+FROM python:3.6
 
 RUN apt-get update -y
 RUN apt-get install -y unzip wget
@@ -9,16 +9,16 @@ RUN unzip ./h2o-3.18.0.8.zip
 RUN mv h2o-3.18.0.8/h2o.jar /tmp/
 
 ADD ./requirements.txt /
-RUN pip install -r /requirements.txt
+RUN pip3 install -r /requirements.txt
 
 ADD . /simple_tensorflow_serving/
 WORKDIR /simple_tensorflow_serving/
 RUN cp ./third_party/openscoring/openscoring-server-executable-1.4-SNAPSHOT.jar /tmp/
 
-# RUN pip install simple-tensorflow-serving
 RUN python ./setup.py install
 
-EXPOSE 8500
+# Modify the CMD to include the path to our USE model and a shared sentencepiece library.
+# We also hardcode the serving port here, but you can tweak it to your convenience
 
-# CMD ["simple_tensorflow_serving", "--port=8500", "--model_base_path=./models/tensorflow_template_application_model"]
-CMD ["simple_tensorflow_serving", "--port=8500", "--model_config_file=./examples/model_config_file.json"]
+CMD ["simple_tensorflow_serving", "--model_base_path=/home/raymond/pyden/src/pyden/simple_tensorflow_serving/models/use/00000001", "--custom_op_paths=/home/raymond/pyden/src/pyden/simple_tensorflow_serving/tf_sentencepiece/"]
+
